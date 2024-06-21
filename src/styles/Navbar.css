@@ -1,0 +1,81 @@
+.navbar {
+    width: 100%;
+    height: 60px;
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .navbar-logo img {
+    height: 40px;
+    width: auto;
+  }
+  
+  .navbar-toggle {
+    display: none;
+    font-size: 24px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .navbar-menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    padding-right: 20px; /* Adiciona padding ao final da lista de navegação */
+  }
+  
+  .navbar-item {
+    margin-left: 20px;
+    white-space: nowrap; /* Impede a quebra de linha no texto do menu */
+  }
+  
+  .navbar-item:last-child {
+    margin-right: 20px; /* Adiciona margem ao último item para evitar corte */
+  }
+  
+  .navbar-item a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+  }
+  
+  .navbar-item a:hover {
+    color: #ddd;
+  }
+  
+  @media (max-width: 768px) {
+    .navbar-toggle {
+      display: block;
+    }
+  
+    .navbar-menu {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+  
+    .navbar-menu.navbar-menu-visible {
+      display: flex;
+    }
+  
+    .navbar-item {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+  }
+  

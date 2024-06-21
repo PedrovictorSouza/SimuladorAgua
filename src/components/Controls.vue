@@ -1,18 +1,12 @@
-<template>
-  <button 
-    @mousedown="startMoving" 
-    @mouseup="stopMoving" 
-    @mouseleave="stopMoving" 
-    @touchstart="startMoving" 
-    @touchend="stopMoving"
-  >
-    Mover Carro
-  </button>
-</template>
+
 
 <script setup>
 import { ref } from 'vue';
 import { updatePosition } from '../utils/useCar'; // Importa a função updatePosition do useCar.js
+import BehaviorTreeService from '../services/BehaviorTreeService.js'; // Certifique-se de que o nome está correto
+
+// Serviço da árvore de comportamento
+const behaviorTreeService = new BehaviorTreeService(updatePosition);
 
 let moveInterval = ref(null);
 
@@ -27,6 +21,11 @@ function startMoving() {
 function stopMoving() {
   clearInterval(moveInterval.value);
   moveInterval.value = null;
+}
+
+function startBehaviorTree() {
+  console.log("Starting behavior tree");
+  behaviorTreeService.process();
 }
 </script>
 

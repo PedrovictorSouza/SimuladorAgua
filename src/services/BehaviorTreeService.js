@@ -1,5 +1,4 @@
-// services/BehaviorTreeService.js
-import Tree from '../behaviourTree/Tree.js';
+import Tree from '../behaviorTree/Tree.js'; // Certifique-se de que 'Tree' está no caminho correto
 
 export default class BehaviorTreeService {
   constructor(updateFunction) {
@@ -7,6 +6,7 @@ export default class BehaviorTreeService {
   }
 
   process() {
+    console.log("Processing tree in BehaviorTreeService");
     this.tree.process();
   }
 }

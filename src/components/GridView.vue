@@ -1,34 +1,47 @@
 <template>
   <div class="grid-container">
+    <Breadcrumb />
     <div class="grid">
-      <div v-for="(item, index) in 49" :key="index" class="grid-item">
+      <div v-for="(item, index) in 49" :key="index" class="grid-item" :data-symbol="getGridLabel(index)">
         <button class="grid-button" :class="{ active: buttonStates[index], special: isSpecialGrid(index) }" @click="moveTo(index)">
           {{ getGridLabel(index) }}
         </button>
       </div>
     </div>
     <img :src="carImage" :style="carStyle" alt="Car">
+    <Controls />
+    <Popup v-if="showPopup" :visible="showPopup" :imageSrc="popupImageSrc" :description="popupDescription" @close="closePopup" />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { carStyle, updatePosition, setRotation, position } from '../utils/useCar';
+import { ref, reactive, onMounted } from 'vue';
+import Breadcrumb from './Breadcrumb.vue';
+import Controls from './Controls.vue';
+import Popup from './Popup.vue';
+import { carStyle, updatePosition, setRotation, position, setInitialPosition } from '../utils/useCar';
 import carImage from '../assets/vehicles/car.svg';  // Substitua pelo caminho correto do seu SVG
+
+import '../styles/GridView.css'; // Importa o arquivo CSS
 
 const gridSize = 7;  // Tamanho da grade (7x7)
 const buttonStates = reactive(Array(49).fill(false));  // Matriz para armazenar os estados dos botões
+const showPopup = ref(false);
+const popupImageSrc = ref('');
+const popupDescription = ref('');
 
 // Identificação dos grids especiais
 const specialGrids = {
-  9: 'Fonte',
-  11: 'Distribuidores',
-  13: 'Depósito',
-  17: 'Entrega ao PDV',
-  19: 'Venda e entrega'
+  9: { label: 'Fonte', image: 'path_to_image_fonte.jpg', description: 'Descrição da Fonte' },
+  11: { label: 'Distribuidores', image: 'path_to_image_distribuidores.jpg', description: 'Descrição dos Distribuidores' },
+  13: { label: 'Depósito', image: 'path_to_image_deposito.jpg', description: 'Descrição do Depósito' },
+  17: { label: 'Entrega ao PDV', image: 'path_to_image_entrega_pdv.jpg', description: 'Descrição da Entrega ao PDV' },
+  19: { label: 'Venda e entrega', image: 'path_to_image_venda_entrega.jpg', description: 'Descrição da Venda e Entrega' }
 };
 
 function moveTo(index) {
+  closePopup();  // Fecha o popup antes de mover o carro
+
   const row = Math.floor(index / gridSize);
   const col = index % gridSize;
   const grid = document.querySelector('.grid');
@@ -37,39 +50,20 @@ function moveTo(index) {
   const targetX = col * step;
   const targetY = row * step;
 
-  let directions = [];
-  let finalDirection = '';
+  updatePosition(targetX, targetY); // Move o carro diretamente para a célula desejada
 
-  if (position.x < targetX) {
-    directions.push('RIGHT');
-    finalDirection = 'RIGHT';
-  } else if (position.x > targetX) {
-    directions.push('LEFT');
-    finalDirection = 'LEFT';
+  if (index in buttonStates) {
+    buttonStates[index] = !buttonStates[index]; // Alterna o estado do botão
   }
 
-  if (position.y < targetY) {
-    directions.push('DOWN');
-    finalDirection = 'DOWN';
-  } else if (position.y > targetY) {
-    directions.push('UP');
-    finalDirection = 'UP';
-  }
-
-  directions.forEach((direction, i) => {
+  if (isSpecialGrid(index)) {
+    const specialGrid = specialGrids[index];
+    popupImageSrc.value = specialGrid.image;
+    popupDescription.value = specialGrid.description;
     setTimeout(() => {
-      setRotation(direction);
-      setTimeout(() => {
-        updatePosition(direction);
-        if (index in buttonStates) {
-          buttonStates[index] = !buttonStates[index]; // Alterna o estado do botão
-        }
-        if (i === directions.length - 1) {
-          setRotation(finalDirection); // Define a rotação final baseada na direção do último movimento
-        }
-      }, 500 * (i + 1));
-    }, 500 * i);
-  });
+      showPopup.value = true;  // Mostra o popup após o carro se mover
+    }, 500); // Ajuste o tempo conforme necessário
+  }
 }
 
 function isSpecialGrid(index) {
@@ -77,8 +71,16 @@ function isSpecialGrid(index) {
 }
 
 function getGridLabel(index) {
-  return specialGrids[index] || '';
+  return specialGrids[index]?.label || '';
 }
+
+function closePopup() {
+  showPopup.value = false;
+}
+
+onMounted(() => {
+  setInitialPosition(); // Define a posição inicial do carro na primeira célula
+});
 </script>
 
 <style scoped>
@@ -86,6 +88,7 @@ function getGridLabel(index) {
   width: 100%;
   height: calc(100% - 60px);  /* Ajuste a altura para subtrair a altura da navbar */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -96,13 +99,15 @@ function getGridLabel(index) {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(7, 1fr);
-  width: 100%;
-  height: 100%;
+  width: 80vmin;  /* Use vmin para garantir que o grid seja sempre quadrado */
+  height: 80vmin; /* Use vmin para garantir que o grid seja sempre quadrado */
 }
 
-.grid-item {
-  border: 1px solid #000; /* Adicione bordas para separar as áreas */
+.grid-item {/* Adicione bordas para separar as áreas */
   box-sizing: border-box; /* Para incluir a borda dentro do tamanho do elemento */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .grid-button {

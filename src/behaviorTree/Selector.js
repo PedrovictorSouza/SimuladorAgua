@@ -1,6 +1,10 @@
 import Node from './Node.js';
 
 class Selector extends Node {
+    constructor(name) {
+        super(name);
+    }
+
     process() {
         for (let child of this.children) {
             const status = child.process();
@@ -9,6 +13,10 @@ class Selector extends Node {
             }
         }
         return 'FAILURE';
+    }
+
+    countSuccesses() {
+        return this.children.filter(child => child.process() === 'SUCCESS').length;
     }
 }
 

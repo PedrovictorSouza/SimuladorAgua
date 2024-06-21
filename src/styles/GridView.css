@@ -1,0 +1,58 @@
+.grid-container {
+  width: 100%;
+  height: calc(100% - 60px);  /* Ajuste a altura para subtrair a altura da navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding-top: 60px;  /* Ajuste o padding para dar espaço para a navbar */
+  overflow: hidden;  /* Garante que não haja overflow */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  width: 100vmin;  /* Usa vmin para assegurar que o grid seja sempre quadrado */
+  height: 100vmin; /* Usa vmin para assegurar que o grid seja sempre quadrado */
+  max-width: 80vmin;  /* Define um tamanho máximo para evitar grids muito grandes */
+  max-height: 80vmin; /* Define um tamanho máximo para evitar grids muito grandes */
+  aspect-ratio: 1;  /* Garante que o grid mantenha a proporção 1:1 */
+}
+
+.grid-item {/* Para incluir a borda dentro do tamanho do elemento */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+.grid-button {
+  width: 100px;
+  height: 100px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8em;
+  text-align: center;
+}
+
+.grid-button.active {
+  background-color: rgba(0, 255, 0, 0.3);  /* Mude a cor para indicar interação */
+}
+
+.grid-button.special {
+  background-color: rgba(0, 0, 255, 0.2);  /* Cor diferente para grids especiais */
+}
+
+.grid-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+img {
+  transition: left 0.5s ease-in, top 0.5s ease-in, transform 0.5s;
+}
